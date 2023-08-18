@@ -1,0 +1,65 @@
+---
+# create namespace avalanche
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: avalanche
+spec:
+  finalizers:
+    - kubernetes
+---
+# create deployment avalanche
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: avalanche
+  namespace: avalanche
+  labels:
+    name: avalanche
+spec:
+  selector:
+    matchLabels:
+      app: avalanche
+  replicas: 1 # tells deployment to run 1 pod matching the template
+  template:
+    metadata:
+      labels:
+        app: avalanche
+    spec:
+      containers:
+        - name: avalanche
+          image: quay.io/freshtracks.io/avalanche:master-2020-09-17-25296ea
+          args:
+            - --metric-count=5000
+            - --series-count=200
+            - --port=9001
+            - --series-interval=60000
+            - --metric-interval=60000
+            - --value-interval=30
+          resources:
+            requests:
+              memory: "4096"
+              cpu: "3"
+            limits:
+              memory: "4096"
+              cpu: "3"
+---
+# create service avalanche-svc
+apiVersion: v1
+kind: Service
+metadata:
+  name: avalanche-svc
+  namespace: avalanche
+  labels:
+    app: avalanche
+spec:
+  ports:
+    # the port that this service should serve on
+    - port: 9001
+      targetPort: 9001
+      name: metrics-port
+  type: ClusterIP
+  clusterIP: None
+  # label keys and values that must match in order to receive traffic for this service
+  selector:
+    app: avalanche
