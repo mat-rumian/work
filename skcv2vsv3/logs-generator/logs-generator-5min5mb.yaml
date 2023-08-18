@@ -1,0 +1,31 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: logs-generator
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: logs-generator-5min5mb
+  namespace: logs-generator
+spec:
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - image: sumologic/kubernetes-tools:2.13.0
+          imagePullPolicy: Always
+          name: logs-generator
+          command:
+            - logs-generator
+            - --duration=300
+            - --random-patterns=10
+            - --throughput=5000000 # 5 megabytes per second
+          resources:
+            requests:
+              memory: "4096Mi"
+              cpu: "3"
+            limits:
+              memory: "4096Mi"
+              cpu: "3"
