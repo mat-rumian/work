@@ -11,9 +11,7 @@ Requirements:
 - [kubectl](https://kubernetes.io/docs/tasks/tools/#kubectl)
 - [helm](https://helm.sh/docs/intro/install/)
 
-### Sumo Logic Collection v2 deployment
-
-#### Installation
+### Cluster installation
 
 1. Create test cluster cluster
 
@@ -68,6 +66,8 @@ Requirements:
 
     **Note:** You can access the dashboard using `kubectl proxy`. To retrieve the secret execute `kubectl describe secret eks-admin -nkube-system`.
 
+## Tests for Sumo Logic Collection V2
+
 1. Deploy Sumo Logic Kubernetes Collection
 
     - Set your Sumo Logic Access Id and Key in [skc-v2-values.yaml](./v2/skc-v2-values.yaml)
@@ -79,15 +79,13 @@ Requirements:
 
     - Deploy Sumo Logic Collection chart using [helm](https://helm.sh/docs/intro/install/)
 
-    ```bash
-    helm upgrade --install collection sumologic \
-     --create-namespace \ 
-     --namespace sumologic \
-     --version 2.19.1 \
-     -f ./v2/skc-v2-values.yaml
-    ```
-
-#### Tests
+        ```bash
+        helm upgrade --install collection sumologic/sumologic \
+        --create-namespace \
+        --namespace sumologic \
+        --version 2.19.1 \
+        -f ./v2/skc-v2-values.yaml
+        ```
 
 1. Fluentd - Logs
 
@@ -172,4 +170,12 @@ Requirements:
         | CPU Description | Logs were generated during 15 minutes and `Fluentd Logs` was processing them for over 16 minutes using all the time maximum CPU resources |
         | Memory | Didn't observe any memory spikes which should be considered here. |
 
-    **Note:** FluentD Logs uses 100% of the CPU to process logs. In every case it take longer than logs generation time. Memory spikes were not observed. To obtain better performance FluentD instances has to be scaled up as FluentD itself has a 1 CPU resource limitation.
+    **Note:** FluentD Logs uses 100% of the CPU to process logs. In every case it takes longer than logs generation time. Memory spikes were not observed. To obtain better performance FluentD instances has to be scaled up as FluentD itself has a 1 CPU resource limitation.
+
+### Cluster cleanup
+
+1. Delete Sumo Logic Kubernetes Collection
+
+```bash
+helm delete collection -nsumologic
+```
