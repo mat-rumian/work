@@ -13,7 +13,7 @@ Requirements:
 
 ### Cluster installation
 
-1. Create test cluster cluster
+1. Create cluster
 
     ```bash
     eksctl create cluster -f ./configuration/cluster.yaml
@@ -122,7 +122,7 @@ Requirements:
         | Resource | Results |
         |--------|--------|
         | CPU IMG |  ![image info](./v2/logs-fluentd/1min5mb/small.png) |
-        | CPU Description | Logs were generated during 1 minute but `Fluentd Logs` was processing them for over 2,5 minutes |
+        | CPU Description | Logs were generated during 1 minute but `Fluentd Logs` was processing them for over 3,5 minutes |
         | Memory | Didn't observe any memory spikes. |
 
     - 5 minutes, 5 megabytes of logs per second (in total 1,5GB of logs)
@@ -148,7 +148,7 @@ Requirements:
         | Resource | Results |
         |--------|--------|
         | CPU IMG |  ![image info](./v2/logs-fluentd/5min5mb/small.png) |
-        | CPU Description | Logs were generated during 5 minutes but `Fluentd Logs` was processing them for over 2,5 minutes |
+        | CPU Description | Logs were generated during 5 minutes but `Fluentd Logs` was processing them for over 7,5 minutes |
         | Memory | Didn't observe any memory spikes. |
 
     - 15 minutes, 5 megabytes of logs per second (in total 4,5 GB of logs)
@@ -173,10 +173,8 @@ Requirements:
         | Resource | Results |
         |--------|--------|
         | CPU IMG |  ![image info](./v2/logs-fluentd/5min5mb/small.png) |
-        | CPU Description | Logs were generated during 15 minutes and `Fluentd Logs` was processing them for over 16 minutes using all the time maximum CPU resources |
+        | CPU Description | Logs were generated during 15 minutes and `Fluentd Logs` was processing them for over 17 minutes using all the time maximum CPU resources |
         | Memory | Didn't observe any memory spikes. |
-
-    **Note:** FluentD Logs uses 100% of the CPU to process logs. In every case it takes longer than logs generation time. Memory spikes were not observed. To obtain better performance FluentD instances has to be scaled up as FluentD itself has a 1 CPU resource limitation.
 
     **Note:** Memory usage was inscreaing slowly and stopped around 500 MBs.
 
@@ -288,9 +286,13 @@ Requirements:
         | CPU Description | Logs were generated during 5 minutes, average CPU usage was on average 15% level. |
         | Memory | Didn't observe any memory spikes which should be considered here. Collector was consuming extra 40 MBs (in total 90MB) to process all the data. |
 
-    **NOTE:** OpenTelemetry Collector in comparison to FluentD doesn't have any issues with increasing resources like CPUs. It can be simply scaled horizontally and vertically.
+### Summary
 
-    **NOTE:** OpenTelemetry Collector uses at least 5x less memory than FluentD. 
+- FluentD Logs uses 100% of the CPU to process logs. In every case it takes longer than logs generation time. Memory spikes were not observed but memory consumption was continously increasing.
+- To obtain better performance FluentD instances has to be scaled up as FluentD itself has a 1 CPU resource limitation.
+- OpenTelemetry Collector in comparison to FluentD doesn't have any issues with increasing resources like CPUs. 
+- OpenTelemetry Collector can be simply scaled horizontally and vertically.
+- OpenTelemetry Collector uses at least 5x less memory than FluentD.
 
 ### Cluster cleanup
 
