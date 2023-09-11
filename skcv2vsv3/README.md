@@ -1,6 +1,6 @@
-# Sumo Logic Kubernetes Collection - v2 versus vX
+# Sumo Logic Kubernetes Collection - FluentD vs OpenTelemetry Collector
 
-Performance differences between [Sumo Logic Collection v2.19.1](https://github.com/SumoLogic/sumologic-kubernetes-collection/blob/v2.19.1/deploy/README.md) and [Sumo Logic Collection v3.14.0](https://github.com/SumoLogic/sumologic-kubernetes-collection/blob/v3.14.0/docs/README.md)
+Performance differences between `FluentD` and `OpenTelemetry Collector` deployed by [Sumo Logic Collection v2.19.1](https://github.com/SumoLogic/sumologic-kubernetes-collection/blob/v2.19.1/deploy/README.md) and [Sumo Logic Collection v3.14.0](https://github.com/SumoLogic/sumologic-kubernetes-collection/blob/v3.14.0/docs/README.md)
 
 ## Deployment Configuration
 
@@ -72,7 +72,7 @@ Requirements:
 
     **Note:** You can access the dashboard using `kubectl proxy`. To retrieve the secret execute `kubectl describe secret eks-admin -nkube-system`.
 
-## Tests for Sumo Logic Collection V2
+## Tests for Sumo Logic Collection V2 - FluentD
 
 1. Deploy Sumo Logic Kubernetes Collection
 
@@ -182,7 +182,7 @@ Requirements:
 
 // TODO
 
-## Tests for Sumo Logic Collection V3
+## Tests for Sumo Logic Collection V3 - OpenTelemetry Collector
 
 1. Deploy Sumo Logic Kubernetes Collection
 
