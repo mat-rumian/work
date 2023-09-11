@@ -176,7 +176,9 @@ Requirements:
         | CPU Description | Logs were generated during 15 minutes and `Fluentd Logs` was processing them for over 16 minutes using all the time maximum CPU resources |
         | Memory | Didn't observe any memory spikes. |
 
-    **Note:** FluentD Logs uses 100% of the CPU to process logs. In every case it takes longer than logs generation time. Memory spikes were not observed. To obtain better performance FluentD instances has to be scaled up as FluentD itself has a 1 CPU resource limitation. 
+    **Note:** FluentD Logs uses 100% of the CPU to process logs. In every case it takes longer than logs generation time. Memory spikes were not observed. To obtain better performance FluentD instances has to be scaled up as FluentD itself has a 1 CPU resource limitation.
+
+    **Note:** Memory usage was inscreaing slowly and stopped around 500 MBs.
 
 1. FluentD - Metrics
 
