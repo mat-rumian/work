@@ -1,0 +1,12 @@
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: skc-cluster
+  region: us-east-1
+  version: "1.23"
+
+nodeGroups:
+  - name: ng-1
+    instanceType: c6a.xlarge
+    desiredCapacity: 5

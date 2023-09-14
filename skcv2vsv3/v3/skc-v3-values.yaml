@@ -1,0 +1,38 @@
+sumologic:
+  accessId: ID
+  accessKey: KEY
+  clusterName: skc-cluster
+  endpoint: https://long-api.sumologic.net/api/
+  traces:
+    enabled: false
+
+metadata:
+  logs:
+    statefulset:
+      replicaCount: 1
+  metrics:
+    statefulset:
+      replicaCount: 1
+
+## Metrics scraping from avalanche
+kube-prometheus-stack:
+  prometheus:
+    additionalServiceMonitors:
+      - name: avalanche
+        endpoints:
+          - port: metrics-port
+            path: /metrics
+            relabelings:
+              ## Sets _sumo_forward_ label to true
+              - sourceLabels: [__name__]
+                separator: ;
+                regex: (.*)
+                targetLabel: _sumo_forward_
+                replacement: "true"
+                action: replace
+        namespaceSelector:
+          matchNames:
+            - avalanche
+        selector:
+          matchLabels:
+            app: avalanche
