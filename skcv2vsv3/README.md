@@ -288,11 +288,11 @@ Requirements:
 
 ### Summary
 
-- FluentD Logs uses 100% of the CPU to process logs. In every case it takes longer than logs generation time. Memory spikes were not observed but memory consumption was continously increasing.
+- FluentD Logs uses 100% of the CPU to process logs (for presented cases 5 MB per 1/5/15 minutes). In every case processing takes longer than logs generation time. Memory spikes were not observed but memory consumption was continously increasing.
 - To obtain better performance FluentD instances has to be scaled up as FluentD itself has a 1 CPU resource limitation.
-- OpenTelemetry Collector in comparison to FluentD doesn't have any issues with increasing resources like CPUs. 
+- OpenTelemetry Collector in comparison to FluentD doesn't have any issues with increasing resources like CPUs.
 - OpenTelemetry Collector can be simply scaled horizontally and vertically.
-- OpenTelemetry Collector uses at least 5x less memory than FluentD.
+- OpenTelemetry Collector uses at least 5-10x less memory than FluentD.
 
 ### Cluster cleanup
 

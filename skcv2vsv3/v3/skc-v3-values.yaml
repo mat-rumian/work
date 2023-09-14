@@ -1,6 +1,6 @@
 sumologic:
-  accessId: suROE7Xvsvzz5H
-  accessKey: qquj3QULrJzMeNodYe0JhfVZ8Zed7amaeJVe1u8GIsASkcP5xmZrifs2feopO47Q
+  accessId: ID
+  accessKey: KEY
   clusterName: skc-cluster
   endpoint: https://long-api.sumologic.net/api/
   traces:
