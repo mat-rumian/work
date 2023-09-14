@@ -180,7 +180,7 @@ Requirements:
 
 1. FluentD - Metrics
 
-// TODO
+    // TODO
 
 ## Tests for Sumo Logic Collection V3 - OpenTelemetry Collector
 
@@ -286,6 +286,10 @@ Requirements:
         | CPU Description | Logs were generated during 5 minutes, average CPU usage was on average 15% level. |
         | Memory | Didn't observe any memory spikes which should be considered here. Collector was consuming extra 40 MBs (in total 90MB) to process all the data. |
 
+1. Otelcol - Metrics
+
+    //TODO
+
 ### Summary
 
 - FluentD Logs uses 100% of the CPU to process logs (for presented cases 5 MB per 1/5/15 minutes). In every case processing takes longer than logs generation time. Memory spikes were not observed but memory consumption was continously increasing.
@@ -301,3 +305,8 @@ Requirements:
 ```bash
 helm delete collection -nsumologic
 ```
+
+### Tools
+
+Logs generator comes from [Sumo Logic Kubernetes Tools - Logs Generator](https://github.com/SumoLogic/sumologic-kubernetes-tools/tree/main/src/rust/logs-generator) - configureation and deployment placed in [logs-generator](./logs-generator/).
+Metrics generator comes from [Avalanche](https://github.com/prometheus-community/avalanche) - configuration and deployment placed in [metrics-generator](./metrics-generator).
