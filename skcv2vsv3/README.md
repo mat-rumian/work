@@ -47,7 +47,7 @@ Requirements:
     Replace [YOUR_AWS_ACCOUNT_ID](https://docs.aws.amazon.com/IAM/latest/UserGuide/console_account-alias.html) in the command.
 
     ```bash
-    eksctl create addon --name aws-ebs-csi-driver --cluster skc-cluster --service-account-role-arn arn:aws:iam::821986006950:role/AmazonEKS_EBS_CSI_DriverRoleSkcCluster --force
+    eksctl create addon --name aws-ebs-csi-driver --cluster skc-cluster --service-account-role-arn arn:aws:iam::YOUR_AWS_ACCOUNT_ID:role/AmazonEKS_EBS_CSI_DriverRoleSkcCluster --force
     ```
 
 1. Install K8s Metrics Server
@@ -172,11 +172,39 @@ Requirements:
 
         | Resource | Results |
         |--------|--------|
-        | CPU IMG |  ![image info](./v2/logs-fluentd/5min5mb/small.png) |
+        | CPU IMG |  ![image info](./v2/logs-fluentd/15min5mb/small.png) |
         | CPU Description | Logs were generated during 15 minutes and `Fluentd Logs` was processing them for over 17 minutes using all the time maximum CPU resources |
         | Memory | Didn't observe any memory spikes. |
 
     **Note:** Memory usage was inscreaing slowly and stopped around 500 MBs.
+
+    - 15 minutes, 5 megabytes of logs per second (in total 4,5 GB of logs) - **with k8s autoscaling**
+        - Generate logs:
+
+            ```bash
+            kubectl apply -f logs-generator/logs-generator-15min5mb.yaml
+            ```
+
+        - Logs generator output:
+
+            ```txt
+            45383 pps     5000010 b/s
+            Total stats: 40946890 logs, 4500053048 bytes
+            Logs generation finished after 900 seconds
+            Sent 40946890 logs in total
+            Sent 4500053048 bytes in total
+            ```
+
+        Logs Metric query: <https://stagdata.long.sumologic.net/ui/#/metricsv2/GN8gA95JWq5StlOhxBy6FE0id0X6HqjmazWCEOUC>
+
+        | Resource | Results |
+        |--------|--------|
+        | CPU IMG |  ![image info](./v2/logs-fluentd/15min5mb/small.png) |
+        | CPU Description | Logs were generated during 15 minutes and `Fluentd Logs` was processing them for over 16 minutes increasing number of replicas 10 times. |
+        | Memory | Didn't observe any memory spikes. |
+
+    **Note:** Memory usage was inscreaing slowly and stopped around 500 MBs.
+    **Note:** Kubernetes autoscaling, scaled `FluentD Logs` instances 10 times!
 
 1. FluentD - Metrics
 
@@ -292,11 +320,18 @@ Requirements:
 
 ### Summary
 
+Single instance resources:
+
+- Otelcol: 1 CPU, 1GB of Memory
+- FluentD: 1 CPU, 1GB of Memory
+
 - FluentD Logs uses 100% of the CPU to process logs (for presented cases 5 MB per 1/5/15 minutes). In every case processing takes longer than logs generation time. Memory spikes were not observed but memory consumption was continously increasing.
 - To obtain better performance FluentD instances has to be scaled up as FluentD itself has a 1 CPU resource limitation.
+- Kubernetes to handle 4,5GB of logs in 15 minutes period had to scale up FluentD Logs 10 times! (`In comparison only single instance of OpenTelemetry Collector was needed to handle this load.`)
 - OpenTelemetry Collector in comparison to FluentD doesn't have any issues with increasing resources like CPUs.
 - OpenTelemetry Collector can be simply scaled horizontally and vertically.
 - OpenTelemetry Collector uses at least 5-10x less memory than FluentD.
+
 
 ### Cluster cleanup
 
