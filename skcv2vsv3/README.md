@@ -199,7 +199,7 @@ Requirements:
 
         | Resource | Results |
         |--------|--------|
-        | CPU IMG |  ![image info](./v2/logs-fluentd/15min5mb/small.png) |
+        | CPU IMG |  ![image info](./v2/logs-fluentd/15min5mbautoscaling/small.png) |
         | CPU Description | Logs were generated during 15 minutes and `Fluentd Logs` was processing them for over 16 minutes increasing number of replicas 10 times. |
         | Memory | Didn't observe any memory spikes. |
 
