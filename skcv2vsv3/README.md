@@ -320,12 +320,18 @@ Requirements:
 
 ### Summary
 
+Single instance resources:
+
+- Otelcol: 1 CPU, 1GB of Memory
+- FluentD: 1 CPU, 1GB of Memory
+
 - FluentD Logs uses 100% of the CPU to process logs (for presented cases 5 MB per 1/5/15 minutes). In every case processing takes longer than logs generation time. Memory spikes were not observed but memory consumption was continously increasing.
-- Kubernetes to handle 4,5GB of logs in 15 minutes period had to scale FluentD Logs 10 times!
 - To obtain better performance FluentD instances has to be scaled up as FluentD itself has a 1 CPU resource limitation.
+- Kubernetes to handle 4,5GB of logs in 15 minutes period had to scale up FluentD Logs 10 times! (`In comparison only single instance of OpenTelemetry Collector was needed to handle this load.`)
 - OpenTelemetry Collector in comparison to FluentD doesn't have any issues with increasing resources like CPUs.
 - OpenTelemetry Collector can be simply scaled horizontally and vertically.
 - OpenTelemetry Collector uses at least 5-10x less memory than FluentD.
+
 
 ### Cluster cleanup
 
