@@ -1,0 +1,51 @@
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: "0.0.0.0:4317"
+      http:
+        endpoint: "0.0.0.0:4318"
+processors:
+  # Provides backpressure mechanism. See
+  # https://github.com/open-telemetry/opentelemetry-collector/tree/main/processor/memorylimiterprocessor for details
+  memory_limiter:
+    check_interval: 5s
+    limit_percentage: 75
+    spike_limit_percentage: 20
+
+  batch:
+    send_batch_size: 256
+    send_batch_max_size: 512
+    timeout: 5s
+
+  ## Smart cascading filtering rules with preset limits.
+  ## Please see https://github.com/SumoLogic/sumologic-otel-collector/tree/v0.86.0-sumo-0/pkg/processor/cascadingfilterprocessor
+  ## for details.
+  cascading_filter:
+    ## Max number of traces for which decisions are kept in memory
+    num_traces: 200000
+
+extensions:
+  health_check: {}
+
+  ## Memory Ballast size should be max 1/3 to 1/2 of memory.
+  # https://github.com/open-telemetry/opentelemetry-collector/blob/main/extension/ballastextension/README.md
+  memory_ballast:
+    size_mib: 683
+
+  pprof: {}
+
+exporters:
+  # URL to Sumo OTLP/HTTP Endpoint.
+  # Please see https://help.sumologic.com/docs/send-data/hosted-collectors/http-source/otlp/
+  otlphttp:
+    endpoint: https://your.otlp.http.endpoint.com
+    compression: gzip
+
+service:
+  extensions: [health_check, memory_ballast, pprof]
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [memory_limiter, cascading_filter, batch]
+      exporters: [otlphttp]
