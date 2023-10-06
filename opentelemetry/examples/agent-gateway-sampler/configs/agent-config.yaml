@@ -1,0 +1,63 @@
+extensions:
+  health_check: {}
+
+  ## Memory Ballast size should be max 1/3 to 1/2 of memory.
+  # https://github.com/open-telemetry/opentelemetry-collector/blob/main/extension/ballastextension/README.md
+  memory_ballast:
+    size_mib: 250
+
+  pprof: {}
+
+receivers:
+  # Provides AWS ECS Container Metrics
+  # Please see https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/awsecscontainermetricsreceiver
+  awsecscontainermetrics:
+
+  otlp:
+    protocols:
+      grpc:
+        endpoint: "0.0.0.0:4317"
+      http:
+        endpoint: "0.0.0.0:4318"
+
+processors:
+  # Provides backpressure mechanism. See
+  # https://github.com/open-telemetry/opentelemetry-collector/tree/main/processor/memorylimiterprocessor for details
+  memory_limiter:
+    check_interval: 5s
+    limit_percentage: 75
+    spike_limit_percentage: 20
+
+  batch:
+    send_batch_size: 256
+    send_batch_max_size: 512
+    timeout: 5s
+
+  resourcedetection:
+    detectors:
+      - env
+      - system
+      - ecs
+      - ec2
+
+exporters:
+  # URL to Sumo OTel Gateway deployment gRPC endpoint
+  otlp/traces:
+    endpoint: your.sumo.otel.gateway.deployment.endpoint:4317
+
+  # URL to Sumo OTLP/HTTP Endpoint.
+  # Please see https://help.sumologic.com/docs/send-data/hosted-collectors/http-source/otlp/
+  otlphttp/metrics:
+    endpoint: https://your.otlp.http.endpoint.com
+
+service:
+  extensions: [health_check, memory_ballast, pprof]
+  pipelines:
+    metrics:
+      receivers: [awsecscontainermetrics]
+      processors: [memory_limiter, resourcedetection, batch]
+      exporters: [otlphttp/metrics]
+    traces:
+      receivers: [otlp]
+      processors: [memory_limiter, resourcedetection, batch]
+      exporters: [otlp/traces]
